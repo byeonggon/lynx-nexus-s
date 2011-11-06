@@ -452,6 +452,12 @@ source "drivers/misc/eeprom/Kconfig"
 source "drivers/misc/cb710/Kconfig"
 source "drivers/misc/iwmc3200top/Kconfig"
 
+config CUSTOM_VOLTAGE
+       bool "Support for Custom Voltage"
+       default y
+       help
+         Say Y here to enable Custom Voltage
+
 config SAMSUNG_MODEMCTL
 	bool "Samsung Modem Control/IO Driver"
 
