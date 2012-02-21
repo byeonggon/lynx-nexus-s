@@ -1,0 +1,23 @@
+Lynx Kernel
+
+Features:
+Based on stock kernel
+Kernel patched from 2.6.35.7 to 2.6.35.14
+Added Ezekeel's Mod(BLD, BLN, BLX, CustomVoltage, LiveOC, Touchwake)
+(thanks to Ezekeel)
+Added Voodoo Color and Voodoo Sound
+(thanks to supercurio)
+Added Governors
+(interactiveX, lagfree, lazy, lulzactive)
+Added I/O Schedulers
+(BFQ-v2-r1, SIO, VR)
+Tweaked Governors - Consulted franciscofranco's tweak(thanks to franciscofranco)
+(Conservative, Ondemand)
+CPUIdle backport from 3.2 Kernel - Consulted SG-NS-ICS(thanks to Steve Garon)
+Change battery percentage calculation.(thanks to KalimochoAz)
+Increased frame rate to 65fps
+SLQB Memory allocator.
+BIGMEM support.
+Optimized CRC32 algorithm
+Optimized ARM RWSEM algorithm
+and more tweaks...
