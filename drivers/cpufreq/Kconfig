@@ -168,6 +168,26 @@ config CPU_FREQ_DEFAULT_GOV_LAZY
         help
           Use the CPUFreq governor 'lazy' as default.
 
+config CPU_FREQ_DEFAULT_GOV_INTELLIDEMAND
+	bool "intellidemand"
+	select CPU_FREQ_GOV_INTELLIDEMAND
+	select CPU_FREQ_GOV_PERFORMANCE
+	help
+	  Intelligent OnDemand Govneror based on Samsung Patched OnDemand
+
+config CPU_FREQ_DEFAULT_GOV_SCARY
+    bool "scary"
+    select CPU_FREQ_GOV_SCARY
+    select CPU_FREQ_GOV_SCARY
+    help
+        Use the CPUFreq governor 'scary' as default.
+
+config CPU_FREQ_DEFAULT_GOV_LIONHEART
+    bool "lionheart"
+    select CPU_FREQ_GOV_LIONHEART
+    help
+        Use the CPUFreq governor 'lionheart' as default.
+
 endchoice
 
 config CPU_FREQ_GOV_PERFORMANCE
@@ -281,6 +301,24 @@ config CPU_FREQ_GOV_LULZACTIVE
 config CPU_FREQ_GOV_LAZY
         tristate "'lazy' cpufreq governor"
         depends on CPU_FREQ
+
+config CPU_FREQ_GOV_INTELLIDEMAND
+	tristate "'intellidemand' cpufreq governor"
+	depends on CPU_FREQ
+	help
+	  'intellidemand' - an intelligent ondemand governor
+
+config CPU_FREQ_GOV_SCARY
+	tristate "'scary' cpufreq governor"
+	depends on CPU_FREQ
+	help
+	  scary - a governor for cabbages
+
+	  If in doubt, say N.
+
+config CPU_FREQ_GOV_LIONHEART
+	tristate "'lionheart' cpufreq governor"
+	depends on CPU_FREQ
 
 config CPU_FREQ_GOV_LAGFREE
         tristate "'lagfree' cpufreq governor"
