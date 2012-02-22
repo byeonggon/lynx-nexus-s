@@ -839,8 +839,8 @@ static int __init cpufreq_smartass_init(void)
 	// FIXME
 	// up_wq = alloc_workqueue("ksmartass_up", WQ_HIGHPRI, 1);
 	// down_wq = alloc_workqueue("ksmartass_down", 0, 1);
-	up_wq = alloc_workqueue("ksmartass_up", WQ_HIGHPRI, 1);
-	down_wq = alloc_workqueue("ksmartass_down", 0, 1);
+	up_wq = create_singlethread_workqueue("ksmartass_up");
+	down_wq = create_workqueue("ksmartass_down");
 	if (!up_wq || !down_wq)
 		return -ENOMEM;
 
