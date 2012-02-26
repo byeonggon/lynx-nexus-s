@@ -438,8 +438,12 @@ static struct s5pv210_cpufreq_voltage smdkc110_cpufreq_volt[] = {
 		.varm	= 1350000,
 		.vint	= 1150000,
 	}, {
-		.freq	= 1000000,
+		.freq	= 1100000,
 		.varm	= 1275000,
+		.vint	= 1100000,
+	}, {
+		.freq	= 1000000,
+		.varm	= 1250000,
 		.vint	= 1100000,
 	}, {
 		.freq	=  800000,
@@ -1103,8 +1107,8 @@ static struct max8998_platform_data max8998_pdata = {
 	.regulators     = herring_regulators,
 	.charger        = &herring_charger,
 	/* Preloads must be in increasing order of voltage value */
-	.buck1_preload	= {950000, 1050000, 1200000, 1275000},
-	.buck2_preload	= {1000000, 1100000},
+	.buck1_preload	= {950000, 1050000, 1200000, 1250000, 1275000, 1350000, 1450000},
+	.buck2_preload	= {1000000, 1100000, 1150000, 1250000},
 	.set1_gpio	= GPIO_BUCK_1_EN_A,
 	.set2_gpio	= GPIO_BUCK_1_EN_B,
 	.set3_gpio	= GPIO_BUCK_2_EN,
