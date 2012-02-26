@@ -55,11 +55,10 @@ static DEFINE_MUTEX(set_freq_lock);
 static struct cpufreq_frequency_table freq_table[] = {
 	{L0, 1320*1000},
 	{L1, 1100*1000},
-	{L2, 880*1000},
-	{L3, 800*1000},
-	{L4, 400*1000},
-	{L5, 200*1000},
-	{L6, 100*1000},
+	{L2, 800*1000},
+	{L3, 400*1000},
+	{L4, 200*1000},
+	{L5, 100*1000},
 	{0, CPUFREQ_TABLE_END},
 };
 
@@ -86,28 +85,24 @@ static struct s5pv210_dvs_conf dvs_conf[] = {
 		.int_volt   = 1100000,
 	},
 	[L2] = {
-		.arm_volt   = 1175000,
-		.int_volt   = 1050000,
+		.arm_volt   = 1200000,
+		.int_volt   = 1100000,
 	},
 	[L3] = {
-		.arm_volt   = 1125000,
-		.int_volt   = 1050000,
+		.arm_volt   = 1050000,
+		.int_volt   = 1100000,
 	},
 	[L4] = {
-		.arm_volt   = 1000000,
-		.int_volt   = 1050000,
+		.arm_volt   = 950000,
+		.int_volt   = 1100000,
 	},
 	[L5] = {
 		.arm_volt   = 950000,
-		.int_volt   = 1050000,
-	},
-	[L6] = {
-		.arm_volt   = 950000,
-		.int_volt   = 950000,
+		.int_volt   = 1000000,
 	},
 };
 
-static u32 clkdiv_val[7][11] = {
+static u32 clkdiv_val[6][11] = {
 	/*{ APLL, A2M, HCLK_MSYS, PCLK_MSYS,
 	 * HCLK_DSYS, PCLK_DSYS, HCLK_PSYS, PCLK_PSYS, ONEDRAM,
 	 * MFC, G3D }
@@ -116,15 +111,13 @@ static u32 clkdiv_val[7][11] = {
 	{0, 5, 5, 1, 3, 1, 4, 1, 3, 0, 0},
 	/* L1 : [1100/200/200/100][166/83][133/66][200/200] */
 	{0, 4, 4, 1, 3, 1, 4, 1, 3, 0, 0},
-	/* L2 : [880/200/200/100][166/83][133/66][200/200] */
-	{0, 3, 3, 1, 3, 1, 4, 1, 3, 1, 0},
-	/* L3 : [800/200/200/100][166/83][133/66][200/200] */
+	/* L2 : [800/200/200/100][166/83][133/66][200/200] */
 	{0, 3, 3, 1, 3, 1, 4, 1, 3, 0, 0},
-	/* L4 : [400/200/200/100][166/83][133/66][200/200] */
+	/* L3 : [400/200/200/100][166/83][133/66][200/200] */
 	{1, 3, 1, 1, 3, 1, 4, 1, 3, 0, 0},
-	/* L5 : [200/200/200/100][166/83][133/66][200/200] */
+	/* L4 : [200/200/200/100][166/83][133/66][200/200] */
 	{3, 3, 0, 1, 3, 1, 4, 1, 3, 0, 0},
-	/* L6 : [100/100/100/100][83/83][66/66][100/100] */
+	/* L5 : [100/100/100/100][83/83][66/66][100/100] */
 	{7, 7, 0, 0, 7, 0, 9, 0, 7, 0, 0},
 };
 
@@ -151,18 +144,7 @@ static struct s3c_freq clk_info[] = {
 		.hclk_dsys  = 166750,
 		.pclk_dsys  = 83375
 	},
-	[L2] = {	/* L2: 880MHz */
-		.fclk       = 880000,
-		.armclk     = 880000,
-		.hclk_tns   = 0,
-		.hclk       = 133000,
-		.pclk       = 66000,
-		.hclk_msys  = 200000,
-		.pclk_msys  = 100000,
-		.hclk_dsys  = 166750,
-		.pclk_dsys  = 83375
-	},
-	[L3] = {	/* L3: 800MHz */
+	[L2] = {	/* L2: 800MHz */
 		.fclk       = 800000,
 		.armclk     = 800000,
 		.hclk_tns   = 0,
@@ -173,7 +155,7 @@ static struct s3c_freq clk_info[] = {
 		.hclk_dsys  = 166750,
 		.pclk_dsys  = 83375
 	},
-	[L4] = {	/* L4: 400MHz */
+	[L3] = {	/* L3: 400MHz */
 		.fclk       = 800000,
 		.armclk     = 400000,
 		.hclk_tns   = 0,
@@ -184,7 +166,7 @@ static struct s3c_freq clk_info[] = {
 		.hclk_dsys  = 166750,
 		.pclk_dsys  = 83375
 	},
-	[L5] = {	/* L5: 200MHz */
+	[L4] = {	/* L4: 200MHz */
 		.fclk       = 800000,
 		.armclk     = 200000,
 		.hclk_tns   = 0,
@@ -195,7 +177,7 @@ static struct s3c_freq clk_info[] = {
 		.hclk_dsys  = 166750,
 		.pclk_dsys  = 83375
 	},
-	[L6] = {	/* L6: 100MHz */
+	[L5] = {	/* L5: 100MHz */
 		.fclk       = 800000,
 		.armclk     = 100000,
 		.hclk_tns   = 0,
@@ -318,10 +300,6 @@ static void s5pv210_cpufreq_clksrcs_MPLL2APLL(unsigned int index,
 	case L1:
 		/* APLL FOUT becomes 1100 Mhz */
 		__raw_writel(PLL45XX_APLL_VAL_1100, S5P_APLL_CON);
-		break;
-	case L2:
-		/* APLL FOUT becomes 880 Mhz */
-		__raw_writel(PLL45XX_APLL_VAL_880, S5P_APLL_CON);
 		break;
 	default:
 		/* APLL FOUT becomes 800 Mhz */
@@ -541,7 +519,7 @@ static int s5pv210_cpufreq_target(struct cpufreq_policy *policy,
 		s5pv210_cpufreq_clksrcs_APLL2MPLL(index, bus_speed_changing);
 
 	/* ARM MCS value changed */
-	if (index <= L4) {
+	if (index <= L3) {
 		reg = __raw_readl(S5P_ARM_MCS_CON);
 		reg &= ~0x3;
 		reg |= 0x1;
@@ -571,7 +549,7 @@ static int s5pv210_cpufreq_target(struct cpufreq_policy *policy,
 	} while (reg & 0xff);
 
 	/* ARM MCS value changed */
-	if (index > L3) {
+	if (index > L2) {
 		reg = __raw_readl(S5P_ARM_MCS_CON);
 		reg &= ~0x3;
 		reg |= 0x3;
@@ -589,7 +567,7 @@ static int s5pv210_cpufreq_target(struct cpufreq_policy *policy,
 	reg = __raw_readl(S5P_CLK_DIV6);
 	reg &= ~S5P_CLKDIV6_ONEDRAM_MASK;
 	reg |= (clkdiv_val[index][8] << S5P_CLKDIV6_ONEDRAM_SHIFT);
-	/* ONEDRAM(DMC0) Clock Divider Ratio: 7+1 for L6, 3+1 for Others */
+	/* ONEDRAM(DMC0) Clock Divider Ratio: 7+1 for L5, 3+1 for Others */
 	__raw_writel(reg, S5P_CLK_DIV6);
 	do {
 		reg = __raw_readl(S5P_CLK_DIV_STAT1);
@@ -606,7 +584,7 @@ static int s5pv210_cpufreq_target(struct cpufreq_policy *policy,
 
 	/*
 	 * Adjust DMC1 refresh ratio according to the rate of hclk_msys
-	 * (L0~L5: 200 <-> L6: 100)
+	 * (L0~L4: 200 <-> L5: 100)
 	 * If DMC1 clock gets slower (by original clock speed * n),
 	 * then, the refresh rate should decrease
 	 * (by original refresh count * n) (n : clock rate)
@@ -666,9 +644,9 @@ static int s5pv210_cpufreq_resume(struct cpufreq_policy *policy)
 
 	if (level == CPUFREQ_TABLE_END) { /* Not found */
 		pr_err("[%s:%d] clock speed does not match: "
-				"%d. Using L3 of 800MHz.\n",
+				"%d. Using L2 of 800MHz.\n",
 				__FILE__, __LINE__, rate);
-		level = L3;
+		level = L2;
 	}
 
 	memcpy(&s3c_freqs.old, &clk_info[level],
@@ -800,9 +778,9 @@ static int __init s5pv210_cpufreq_driver_init(struct cpufreq_policy *policy)
 
 	if (level == CPUFREQ_TABLE_END) { /* Not found */
 		pr_err("[%s:%d] clock speed does not match: "
-				"%d. Using L3 of 800MHz.\n",
+				"%d. Using L2 of 800MHz.\n",
 				__FILE__, __LINE__, rate);
-		level = L3;
+		level = L2;
 	}
 
 	backup_dmc0_reg = __raw_readl(S5P_VA_DMC0 + 0x30) & 0xFFFF;
