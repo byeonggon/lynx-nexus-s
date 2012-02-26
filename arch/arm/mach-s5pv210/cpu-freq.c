@@ -805,7 +805,7 @@ static int __init s5pv210_cpufreq_driver_init(struct cpufreq_policy *policy)
 	cpufreq_frequency_table_cpuinfo(policy, freq_table);
 
 	/* set default min and max policies to non safe speeds */
-	policy->max = 880000;
+	policy->max = 1100000;
 	policy->min = 100000;
 
 	return 0;
