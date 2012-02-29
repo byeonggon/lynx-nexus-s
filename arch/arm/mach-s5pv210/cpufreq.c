@@ -64,7 +64,7 @@ struct dram_conf {
 static struct dram_conf s5pv210_dram_conf[2];
 
 enum perf_level {
-	L0, L1, L2, L3, L4, L5, L6
+	L0, L1, L2, L3, L4, L5
 };
 
 enum s5pv210_mem_type {
@@ -82,10 +82,9 @@ static struct cpufreq_frequency_table s5pv210_freq_table[] = {
 	{L0, 1320*1000},
 	{L1, 1100*1000},
 	{L2, 880*1000},
-	{L3, 800*1000},
-	{L4, 400*1000},
-	{L5, 200*1000},
-	{L6, 100*1000},
+	{L3, 400*1000},
+	{L4, 200*1000},
+	{L5, 100*1000},
 	{0, CPUFREQ_TABLE_END},
 };
 
@@ -102,36 +101,32 @@ const unsigned long int_volt_max = 1300000;
 
 static struct s5pv210_dvs_conf dvs_conf[] = {
 	[L0] = {
-		.arm_volt   = 1375000,
-		.int_volt   = 1175000,
+		.arm_volt   = 1400000,
+		.int_volt   = 1200000,
 	},
 	[L1] = {
-		.arm_volt   = 1250000,
-		.int_volt   = 1100000,
+		.arm_volt   = 1300000,
+		.int_volt   = 1150000,
 	},
 	[L2] = {
 		.arm_volt   = 1250000,
 		.int_volt   = 1100000,
 	},
 	[L3] = {
-		.arm_volt   = 1175000,
-		.int_volt   = 1050000,
+		.arm_volt   = 1050000,
+		.int_volt   = 1100000,
 	},
 	[L4] = {
-		.arm_volt   = 1125000,
-		.int_volt   = 1050000,
+		.arm_volt   = 950000,
+		.int_volt   = 1100000,
 	},
 	[L5] = {
 		.arm_volt   = 950000,
-		.int_volt   = 1050000,
-	},
-	[L6] = {
-		.arm_volt   = 950000,
-		.int_volt   = 950000,
+		.int_volt   = 1000000,
 	},
 };
 
-static u32 clkdiv_val[7][11] = {
+static u32 clkdiv_val[6][11] = {
 	/*
 	 * Clock divider value for following
 	 * { APLL, A2M, HCLK_MSYS, PCLK_MSYS,
@@ -148,16 +143,13 @@ static u32 clkdiv_val[7][11] = {
 	/* L2 : [880/200/100][166/83][133/66][200/200] */
 	{0, 3, 3, 1, 3, 1, 4, 1, 3, 0, 0},
 
-	/* L3 : [800/200/100][166/83][133/66][200/200] */
-	{0, 3, 3, 1, 3, 1, 4, 1, 3, 0, 0},
-
-	/* L4 : [400/200/100][166/83][133/66][200/200] */
+	/* L3 : [400/200/100][166/83][133/66][200/200] */
 	{1, 3, 1, 1, 3, 1, 4, 1, 3, 0, 0},
 
-	/* L5 : [200/200/100][166/83][133/66][200/200] */
+	/* L4 : [200/200/100][166/83][133/66][200/200] */
 	{3, 3, 1, 1, 3, 1, 4, 1, 3, 0, 0},
 
-	/* L6 : [100/100/100][83/83][66/66][100/100] */
+	/* L5 : [100/100/100][83/83][66/66][100/100] */
 	{7, 7, 0, 0, 7, 0, 9, 0, 7, 0, 0},
 };
 
@@ -271,11 +263,11 @@ static int s5pv210_target(struct cpufreq_policy *policy,
 	cpufreq_notify_transition(&freqs, CPUFREQ_PRECHANGE);
 
 	/* Check if there need to change PLL */
-	if ((index <= L2) || (freqs.old >= s5pv210_freq_table[L0].frequency))
+	if ((index <= L2) || (freqs.old >= s5pv210_freq_table[L2].frequency))
 		pll_changing = 1;
 
 	/* Check if there need to change System bus clock */
-	if ((index == L6) || (freqs.old == s5pv210_freq_table[L4].frequency))
+	if ((index == L5) || (freqs.old == s5pv210_freq_table[L5].frequency))
 		bus_speed_changing = 1;
 
 	if (bus_speed_changing) {
@@ -329,7 +321,7 @@ static int s5pv210_target(struct cpufreq_policy *policy,
 		} while (reg & ((1 << 7) | (1 << 3)));
 
 		/*
-		 * 3. DMC1 refresh count for 133Mhz if (index == L6) is
+		 * 3. DMC1 refresh count for 133Mhz if (index == L5) is
 		 * true refresh counter is already programed in upper
 		 * code. 0x287@83Mhz
 		 */
@@ -374,7 +366,7 @@ static int s5pv210_target(struct cpufreq_policy *policy,
 	/* ARM MCS value changed */
 	reg = __raw_readl(S5P_ARM_MCS_CON);
 	reg &= ~0x3;
-	if (index >= L5)
+	if (index >= L4)
 		reg |= 0x3;
 	else
 		reg |= 0x1;
@@ -445,7 +437,7 @@ static int s5pv210_target(struct cpufreq_policy *policy,
 
 		/*
 		 * 10. DMC1 refresh counter
-		 * L6 : DMC1 = 100Mhz 7.8us/(1/100) = 0x30c
+		 * L5 : DMC1 = 100Mhz 7.8us/(1/100) = 0x30c
 		 * Others : DMC1 = 200Mhz 7.8us/(1/200) = 0x618
 		 */
 		if (!bus_speed_changing)
@@ -453,7 +445,7 @@ static int s5pv210_target(struct cpufreq_policy *policy,
 	}
 
 	/*
-	 * L6 level need to change memory bus speed, hence onedram clock divier
+	 * L5 level need to change memory bus speed, hence onedram clock divier
 	 * and memory refresh parameter should be changed
 	 */
 	if (bus_speed_changing) {
@@ -467,7 +459,7 @@ static int s5pv210_target(struct cpufreq_policy *policy,
 		} while (reg & (1 << 15));
 
 		/* Reconfigure DRAM refresh counter value */
-		if (index != L6) {
+		if (index != L5) {
 			/*
 			 * DMC0 : 166Mhz
 			 * DMC1 : 200Mhz
