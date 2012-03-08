@@ -75,7 +75,7 @@ static ssize_t liveoc_octarget_low_write(struct device * dev, struct device_attr
 
     if(sscanf(buf, "%u\n", &data) == 1)
 	{
-	    if (data != oc_low_freq && data <= oc_high_freq)
+	    if (data != oc_low_freq)
 		{
 		    oc_low_freq = data;
 	    
@@ -101,7 +101,7 @@ static ssize_t liveoc_octarget_high_write(struct device * dev, struct device_att
 
     if(sscanf(buf, "%u\n", &data) == 1)
 	{
-	    if (data != oc_high_freq && data >= oc_low_freq)
+	    if (data != oc_high_freq)
 		{
 		    oc_high_freq = data;
 	    
